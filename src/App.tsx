@@ -1,35 +1,134 @@
+import { useRef, useState } from 'react'
 import './App.css'
 
+const CANDIDATOS: Record<string, string> = {
+  '1': 'Candidato A',
+  '2': 'Candidato B',
+  '3': 'Candidato C',
+}
+
 function App() {
+  const [tela, setTela] = useState('')
+  const [modo, setModo] = useState<'digitando' | 'nome' | 'fim'>('digitando')
+  const [, setVotosA] = useState(0)
+  const [, setVotosB] = useState(0)
+  const [, setVotosC] = useState(0)
+  const audioContextRef = useRef<AudioContext | null>(null)
+
+  function tocarSomConfirmacao() {
+    const AudioContextClass =
+      window.AudioContext ??
+      (window as typeof window & { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext
+
+    if (!AudioContextClass) {
+      return
+    }
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextClass()
+    }
+
+    const contexto = audioContextRef.current
+    const frequencias = [880, 880, 1046]
+    const duracaoBeep = 0.08
+    const intervalo = 0.12
+
+    frequencias.forEach((frequencia, indice) => {
+      const oscilador = contexto.createOscillator()
+      const ganho = contexto.createGain()
+
+      oscilador.type = 'square'
+      oscilador.frequency.value = frequencia
+
+      const inicio = contexto.currentTime + indice * intervalo
+      ganho.gain.setValueAtTime(0.2, inicio)
+      ganho.gain.exponentialRampToValueAtTime(0.001, inicio + duracaoBeep)
+
+      oscilador.connect(ganho)
+      ganho.connect(contexto.destination)
+
+      oscilador.start(inicio)
+      oscilador.stop(inicio + duracaoBeep)
+    })
+  }
+
+  function digitar(numero: string) {
+    if (modo === 'fim') {
+      setModo('digitando')
+      setTela(numero)
+      return
+    }
+
+    setTela((atual) => atual + numero)
+  }
+
+  function corrige() {
+    setModo('digitando')
+    setTela('')
+  }
+
+  function confirma() {
+    tocarSomConfirmacao()
+
+    switch (tela) {
+      case '1':
+        setVotosA((votos) => votos + 1)
+        break
+      case '2':
+        setVotosB((votos) => votos + 1)
+        break
+      case '3':
+        setVotosC((votos) => votos + 1)
+        break
+    }
+
+    const nomeCandidato = CANDIDATOS[tela] ?? 'VOTO NULO'
+    setModo('nome')
+    setTela(nomeCandidato)
+
+    setTimeout(() => {
+      setModo('fim')
+      setTela('FIM')
+    }, 2000)
+  }
+
+  const classeTela =
+    modo === 'fim'
+      ? 'urna-tela-conteudo urna-tela-conteudo--fim'
+      : modo === 'nome'
+        ? 'urna-tela-conteudo urna-tela-conteudo--nome'
+        : 'urna-tela-conteudo'
+
   return (
     <div className="urna-wrapper">
       <div className="urna">
         <div className="urna-tela">
-          <p className="urna-tela-conteudo"></p>
+          <p className={classeTela}>{tela}</p>
         </div>
 
         <div className="urna-painel">
           <div className="teclado">
-            <button type="button" className="tecla">1</button>
-            <button type="button" className="tecla">2</button>
-            <button type="button" className="tecla">3</button>
-            <button type="button" className="tecla">4</button>
-            <button type="button" className="tecla">5</button>
-            <button type="button" className="tecla">6</button>
-            <button type="button" className="tecla">7</button>
-            <button type="button" className="tecla">8</button>
-            <button type="button" className="tecla">9</button>
-            <button type="button" className="tecla tecla-zero">0</button>
+            <button type="button" className="tecla" onClick={() => digitar('1')}>1</button>
+            <button type="button" className="tecla" onClick={() => digitar('2')}>2</button>
+            <button type="button" className="tecla" onClick={() => digitar('3')}>3</button>
+            <button type="button" className="tecla" onClick={() => digitar('4')}>4</button>
+            <button type="button" className="tecla" onClick={() => digitar('5')}>5</button>
+            <button type="button" className="tecla" onClick={() => digitar('6')}>6</button>
+            <button type="button" className="tecla" onClick={() => digitar('7')}>7</button>
+            <button type="button" className="tecla" onClick={() => digitar('8')}>8</button>
+            <button type="button" className="tecla" onClick={() => digitar('9')}>9</button>
+            <button type="button" className="tecla tecla-zero" onClick={() => digitar('0')}>0</button>
           </div>
 
           <div className="acoes">
             <button type="button" className="acao acao-branco">
               BRANCO
             </button>
-            <button type="button" className="acao acao-corrige">
+            <button type="button" className="acao acao-corrige" onClick={corrige}>
               CORRIGE
             </button>
-            <button type="button" className="acao acao-confirma">
+            <button type="button" className="acao acao-confirma" onClick={confirma}>
               CONFIRMA
             </button>
           </div>
