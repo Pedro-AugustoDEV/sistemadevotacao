@@ -19,12 +19,6 @@
   border: 4px solid #333;
 }
 
-.resultado-parcial {
-  margin-top: 16px;
-  font-size: 14px;
-  color: var(--text);
-}
-
 .urna-tela {
   flex: 1;
   background: #ffffff;
@@ -43,6 +37,16 @@
   min-width: 100%;
   text-align: center;
   letter-spacing: 4px;
+}
+
+.urna-tela-conteudo--nome {
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.urna-tela-conteudo--fim {
+  font-size: 48px;
+  letter-spacing: 2px;
 }
 
 .urna-painel {
