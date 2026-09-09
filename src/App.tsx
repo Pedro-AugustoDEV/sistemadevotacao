@@ -1,48 +1,38 @@
-import { useState } from 'react'
 import './App.css'
 
 function App() {
-  const [numeroDigitado, setNumeroDigitado] = useState('')
-  const [votosA, setVotosA] = useState(0)
-  const [votosB, setVotosB] = useState(0)
-  const [votosC, setVotosC] = useState(0)
-  const [mensagem, setMensagem] = useState('')
-
-  function handleConfirmar() {
-    switch (numeroDigitado) {
-      case '1':
-        setVotosA((votos) => votos + 1)
-        break
-      case '2':
-        setVotosB((votos) => votos + 1)
-        break
-      case '3':
-        setVotosC((votos) => votos + 1)
-        break
-      default:
-        return
-    }
-
-    setMensagem('Voto computado')
-    setNumeroDigitado('')
-  }
-
   return (
-    <div className="voting-app">
-      <h1>Urna Eletrônica</h1>
-      <div className="ballot">
-        <input
-          type="number"
-          className="ballot-input"
-          placeholder="Número do candidato"
-          value={numeroDigitado}
-          onChange={(event) => setNumeroDigitado(event.target.value)}
-        />
-        <button type="button" className="confirm-button" onClick={handleConfirmar}>
-          Confirmar
-        </button>
+    <div className="urna">
+      <div className="urna-tela">
+        <p className="urna-tela-conteudo"></p>
       </div>
-      {mensagem && <p className="status-message">{mensagem}</p>}
+
+      <div className="urna-painel">
+        <div className="teclado">
+          <button type="button" className="tecla">1</button>
+          <button type="button" className="tecla">2</button>
+          <button type="button" className="tecla">3</button>
+          <button type="button" className="tecla">4</button>
+          <button type="button" className="tecla">5</button>
+          <button type="button" className="tecla">6</button>
+          <button type="button" className="tecla">7</button>
+          <button type="button" className="tecla">8</button>
+          <button type="button" className="tecla">9</button>
+          <button type="button" className="tecla tecla-zero">0</button>
+        </div>
+
+        <div className="acoes">
+          <button type="button" className="acao acao-branco">
+            BRANCO
+          </button>
+          <button type="button" className="acao acao-corrige">
+            CORRIGE
+          </button>
+          <button type="button" className="acao acao-confirma">
+            CONFIRMA
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
