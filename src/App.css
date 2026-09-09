@@ -2,15 +2,27 @@
   box-sizing: border-box;
 }
 
+.urna-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 48px auto;
+}
+
 .urna {
   display: flex;
   width: 480px;
   min-height: 280px;
-  margin: 48px auto;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   border: 4px solid #333;
+}
+
+.resultado-parcial {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text);
 }
 
 .urna-tela {
