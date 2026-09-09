@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 
 const CANDIDATOS: Record<string, string> = {
@@ -13,44 +13,9 @@ function App() {
   const [, setVotosA] = useState(0)
   const [, setVotosB] = useState(0)
   const [, setVotosC] = useState(0)
-  const audioContextRef = useRef<AudioContext | null>(null)
 
   function tocarSomConfirmacao() {
-    const AudioContextClass =
-      window.AudioContext ??
-      (window as typeof window & { webkitAudioContext?: typeof AudioContext })
-        .webkitAudioContext
-
-    if (!AudioContextClass) {
-      return
-    }
-
-    if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContextClass()
-    }
-
-    const contexto = audioContextRef.current
-    const frequencias = [880, 880, 1046]
-    const duracaoBeep = 0.08
-    const intervalo = 0.12
-
-    frequencias.forEach((frequencia, indice) => {
-      const oscilador = contexto.createOscillator()
-      const ganho = contexto.createGain()
-
-      oscilador.type = 'square'
-      oscilador.frequency.value = frequencia
-
-      const inicio = contexto.currentTime + indice * intervalo
-      ganho.gain.setValueAtTime(0.2, inicio)
-      ganho.gain.exponentialRampToValueAtTime(0.001, inicio + duracaoBeep)
-
-      oscilador.connect(ganho)
-      ganho.connect(contexto.destination)
-
-      oscilador.start(inicio)
-      oscilador.stop(inicio + duracaoBeep)
-    })
+    new Audio('/som-urna.mp3').play()
   }
 
   function digitar(numero: string) {
@@ -134,6 +99,10 @@ function App() {
           </div>
         </div>
       </div>
+
+      {modo === 'nome' && (
+        <p className="feedback-mensagem">Voto computado com sucesso!</p>
+      )}
     </div>
   )
 }
