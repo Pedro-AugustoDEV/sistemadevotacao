@@ -15,7 +15,10 @@ function App() {
   const [, setVotosC] = useState(0)
 
   function tocarSomConfirmacao() {
-    new Audio('/som-urna.mp3').play()
+    const audio = new Audio('/som-urna.mp3')
+    audio.volume = 0.3
+    audio.currentTime = 2
+    audio.play()
   }
 
   function digitar(numero: string) {
