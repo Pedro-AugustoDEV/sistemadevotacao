@@ -2,47 +2,70 @@ import { useState } from 'react'
 import './App.css'
 
 function App() {
-  const [numeroDigitado, setNumeroDigitado] = useState('')
+  const [tela, setTela] = useState('')
   const [votosA, setVotosA] = useState(0)
   const [votosB, setVotosB] = useState(0)
   const [votosC, setVotosC] = useState(0)
-  const [mensagem, setMensagem] = useState('')
 
-  function handleConfirmar() {
-    switch (numeroDigitado) {
-      case '1':
-        setVotosA((votos) => votos + 1)
-        break
-      case '2':
-        setVotosB((votos) => votos + 1)
-        break
-      case '3':
-        setVotosC((votos) => votos + 1)
-        break
-      default:
-        return
+  function digitar(numero: string) {
+    setTela((atual) => atual + numero)
+  }
+
+  function corrige() {
+    setTela('')
+  }
+
+  function confirma() {
+    if (tela === '1') {
+      setVotosA((votos) => votos + 1)
+    } else if (tela === '2') {
+      setVotosB((votos) => votos + 1)
+    } else if (tela === '3') {
+      setVotosC((votos) => votos + 1)
     }
 
-    setMensagem('Voto computado')
-    setNumeroDigitado('')
+    setTela('FIM')
+    setTimeout(() => setTela(''), 2000)
   }
 
   return (
-    <div className="voting-app">
-      <h1>Urna Eletrônica</h1>
-      <div className="ballot">
-        <input
-          type="number"
-          className="ballot-input"
-          placeholder="Número do candidato"
-          value={numeroDigitado}
-          onChange={(event) => setNumeroDigitado(event.target.value)}
-        />
-        <button type="button" className="confirm-button" onClick={handleConfirmar}>
-          Confirmar
-        </button>
+    <div className="urna-wrapper">
+      <div className="urna">
+        <div className="urna-tela">
+          <p className="urna-tela-conteudo">{tela}</p>
+        </div>
+
+        <div className="urna-painel">
+          <div className="teclado">
+            <button type="button" className="tecla" onClick={() => digitar('1')}>1</button>
+            <button type="button" className="tecla" onClick={() => digitar('2')}>2</button>
+            <button type="button" className="tecla" onClick={() => digitar('3')}>3</button>
+            <button type="button" className="tecla" onClick={() => digitar('4')}>4</button>
+            <button type="button" className="tecla" onClick={() => digitar('5')}>5</button>
+            <button type="button" className="tecla" onClick={() => digitar('6')}>6</button>
+            <button type="button" className="tecla" onClick={() => digitar('7')}>7</button>
+            <button type="button" className="tecla" onClick={() => digitar('8')}>8</button>
+            <button type="button" className="tecla" onClick={() => digitar('9')}>9</button>
+            <button type="button" className="tecla tecla-zero" onClick={() => digitar('0')}>0</button>
+          </div>
+
+          <div className="acoes">
+            <button type="button" className="acao acao-branco">
+              BRANCO
+            </button>
+            <button type="button" className="acao acao-corrige" onClick={corrige}>
+              CORRIGE
+            </button>
+            <button type="button" className="acao acao-confirma" onClick={confirma}>
+              CONFIRMA
+            </button>
+          </div>
+        </div>
       </div>
-      {mensagem && <p className="status-message">{mensagem}</p>}
+
+      <p className="resultado-parcial">
+        Candidato A: {votosA} | Candidato B: {votosB} | Candidato C: {votosC}
+      </p>
     </div>
   )
 }
